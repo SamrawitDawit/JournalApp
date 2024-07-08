@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "248581530281",
+    "project_id": "journal-app-acd37",
+    "storage_bucket": "journal-app-acd37.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248581530281:android:756e795631eddb790e3fb8",
+        "android_client_info": {
+          "package_name": "com.samri.journal_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw80Hyx8FwR1kop5ZncraYZY2QyQBDg7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
