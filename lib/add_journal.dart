@@ -1,7 +1,7 @@
-import 'dart:async';
-
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:journal_app/auth.dart';
 import 'package:journal_app/models.dart';
 import 'package:journal_app/service.dart';
@@ -15,6 +15,10 @@ class _AddJournalState extends State<AddJournal>{
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _selectedMood;
+  File? _mediaFile;
+  final ImagePicker _picker = ImagePicker();
+
   @override
 
   Widget build(BuildContext context) {
@@ -61,7 +65,7 @@ class _AddJournalState extends State<AddJournal>{
                     TextFormField(
                       controller: _contentController,
                       decoration: InputDecoration(labelText: "Content"),
-                      maxLines: 15,
+                      maxLines: 10,
                       validator: (value){
                         if (value==null||value.isEmpty){
                           return "Please enter content";
@@ -69,19 +73,56 @@ class _AddJournalState extends State<AddJournal>{
                         return null;
                       },
                     ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                          if (pickedFile != null){
+                            setState(() {
+                              _mediaFile = File(pickedFile.path);
+                            });
+                          }
+                        },
+                        child: Text("Select media")),
+                    if (_mediaFile != null)
+                      Image.file(_mediaFile!, height: 200, width: 200,),
+
                     SizedBox(height: 16,),
+                    Text("How are you feeling today?", style: TextStyle(fontSize: 18),),
+                    SizedBox(height: 8,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildMoodButton("😊", "happy"),
+                        _buildMoodButton("🤗", "grateful"),
+                        _buildMoodButton("😐", "neutral"),
+                        _buildMoodButton("😔", "sad"),
+                        _buildMoodButton("😟", "worried"),
+                        _buildMoodButton("😠", "angry")
+                      ],
+                    ),
+                    SizedBox(height: 60,),
                     ElevatedButton(
                         onPressed: () async{
                           if(_formKey.currentState!.validate()) {
+                            String? mediaUrl;
+                            if (_mediaFile != null){
+                              mediaUrl = await _firestoreService.uploadMedia(_mediaFile!);
+                            }
                             final entry = JournalEntry(
                                 id: '',
                                 userId: user.uid,
                                 title: _titleController.text,
                                 content: _contentController.text,
-                                date: DateTime.now());
+                                date: DateTime.now(),
+                                mood: _selectedMood,
+                                mediaUrl: mediaUrl);
                             await _firestoreService.addJournalEntry(entry);
                             _titleController.clear();
                             _contentController.clear();
+                            setState((){
+                              _selectedMood = null;
+                              _mediaFile = null;
+                          });
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Journal entry added"))
                             );
@@ -95,7 +136,8 @@ class _AddJournalState extends State<AddJournal>{
                           )
                         ),
                         child: Text("Add Entry")
-                    )
+                    ),
+
                   ],
                 ),
               ),
@@ -105,6 +147,25 @@ class _AddJournalState extends State<AddJournal>{
           ),
         ),
       ),
+    );
+  }
+  Widget _buildMoodButton(String emoji, String mood){
+    return GestureDetector(
+      onTap: (){
+        setState(() {
+          _selectedMood = emoji;
+
+        });
+      },
+      child: CircleAvatar(
+        radius: 24,
+        backgroundColor: _selectedMood == emoji? Colors.blue: Colors.grey[200],
+        child: Text(
+          emoji,
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+
     );
   }
 }

@@ -16,15 +16,31 @@ class JournalEntryPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              DateFormat('yyyy-MM-dd').format(entry.date),
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+            Row(
+              children: [
+                Text(
+                  DateFormat('yyyy-MM-dd').format(entry.date),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                SizedBox(width: 30,),
+                if (entry.mood != null) Text(entry.mood!, style: TextStyle(fontSize: 25),)],
             ),
             SizedBox(height: 16),
             Text(
               entry.content,
               style: TextStyle(fontSize: 18),
-            )
+            ),
+            SizedBox(height: 16,),
+            if (entry.mediaUrl != null)
+              Center(
+                child: Image.network(
+                  entry.mediaUrl!,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+
+                )
+              )
           ],
         ),
       ),

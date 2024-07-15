@@ -24,8 +24,10 @@ class JournalEntry{
   final String title;
   final String content;
   final DateTime date;
+  final String? mood;
+  final String? mediaUrl;
 
-  JournalEntry({required this.id, required this.userId,  required this.title, required this.content, required this.date});
+  JournalEntry({required this.id, required this.userId,  required this.title, required this.content, required this.date,  this.mood, this.mediaUrl});
 
   Map<String, dynamic> toMap(){
     return{
@@ -33,6 +35,8 @@ class JournalEntry{
       'title': title,
       'content': content,
       'date': Timestamp.fromDate(date),
+      'mood': mood,
+      'mediaUrl': mediaUrl,
     };
   }
   factory JournalEntry.fromMap(String id, Map<String, dynamic> map){
@@ -42,6 +46,8 @@ class JournalEntry{
         title: map['title'],
         content: map['content'],
         date: (map['date'] as Timestamp).toDate(),
+        mood: map['mood'],
+        mediaUrl: map['mediaUrl']
     );
   }
 }

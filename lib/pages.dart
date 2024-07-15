@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:journal_app/add_journal.dart';
 import 'package:journal_app/calendar.dart';
-import 'package:journal_app/journals.dart';
+import 'package:journal_app/Home.dart';
 import 'package:journal_app/main.dart';
 
 class Pages extends StatefulWidget {

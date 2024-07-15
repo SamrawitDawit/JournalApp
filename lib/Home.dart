@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:journal_app/Journal_entry_page.dart';
 import 'package:journal_app/calendar.dart';
+import 'package:journal_app/quote_service.dart';
 import 'package:journal_app/service.dart';
 import 'models.dart';
 
@@ -18,9 +19,12 @@ class _JournalState extends State<Journals>{
   final user = FirebaseAuth.instance.currentUser!;
   final CalendarPage _calendarInstance = CalendarPage();
   FirestoreService _firestoreService = FirestoreService();
+  QuoteService _quoteService = QuoteService();
   String _userName = "";
   int _streak = 0;
   int _numEntries = 0;
+  String _dailyQuote = "";
+
 
 
   @override
@@ -29,8 +33,15 @@ class _JournalState extends State<Journals>{
     _fetchUserName();
     _fetchStreak();
     _fetchNumberOfEntries();
+    _fetchDailyQuote();
   }
-
+  Future<void> _fetchDailyQuote() async{
+    final quote = await _quoteService.getDailyQuote();
+    setState(() {
+      _dailyQuote = quote;
+      print(_dailyQuote);
+    });
+  }
   int _calculateStreak(List<JournalEntry> entries) {
     if (entries.isEmpty) return 0;
 
@@ -43,8 +54,6 @@ class _JournalState extends State<Journals>{
 
     for (var entry in entries) {
       final entryDate = DateTime(entry.date.year, entry.date.month, entry.date.day);
-
-      print("Comparing $entryDate with $streakDate");
 
       if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
         streak++;
@@ -76,6 +85,7 @@ class _JournalState extends State<Journals>{
     });
 
   }
+
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null){
@@ -87,24 +97,36 @@ class _JournalState extends State<Journals>{
       appBar: AppBar(
         title: Text("Journals"),
       ),
-     body:
 
-     Column(
+     body: Column(
        children: [
          Text("Hello $_userName!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, )),
-         SizedBox(height: 40,),
+         SizedBox(height: 20,),
          Padding(
            padding: EdgeInsets.all(8.0),
+           child: Column(
+             children: [
+               Container(
 
-           child: Row(
-              children: [
-                _buildDashboardContainer(context,
-                    title: "Streak", value: "$_streak days"),
-                SizedBox(width: 8,),
-                _buildDashboardContainer(context,
-                    title: "Entries", value: _numEntries.toString())
-              ],
-    )
+                 child: Text(_dailyQuote, style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                 padding: const EdgeInsets.all(16.0),
+                 decoration: BoxDecoration(
+                   color: Colors.blue.shade100,
+                   borderRadius: BorderRadius.circular(12),
+                 ),
+               ),
+               SizedBox(height: 20,),
+               Row(
+                  children: [
+                    _buildDashboardContainer(context,
+                        title: "Streak", value: "$_streak ${_streak == 1 ? 'day' : 'days'}"),
+                    SizedBox(width: 8,),
+                    _buildDashboardContainer(context,
+                        title: "Entries", value: _numEntries.toString())
+                  ],
+                   ),
+             ],
+           )
            ),
          SizedBox(height: 20,),
          Expanded(child: StreamBuilder<List<JournalEntry>>(
@@ -134,7 +156,15 @@ class _JournalState extends State<Journals>{
                      child: Card(
                       child: ListTile(
                         title: Text(entry.title),
-                        trailing: Text(DateFormat('yyyy-MM-dd').format(entry.date)),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(DateFormat('yyyy-MM-dd').format(entry.date)),
+                            if (entry.mood != null)
+                              Text(entry.mood!, style: TextStyle(fontSize: 24),)
+                          ],
+                        )
+
                    )));
                  });
            },

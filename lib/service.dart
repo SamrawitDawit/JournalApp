@@ -1,9 +1,19 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:journal_app/models.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<String> uploadMedia(File file) async {
+    final ref = _storage.ref().child('journal_media/${file.path.split('/').last}');
+    final uploadTaask = ref.putFile(file);
+    final snapshot = await uploadTaask.whenComplete(() {});
+    return await snapshot.ref.getDownloadURL();
+  }
   Future<void> addJournalEntry(JournalEntry entry) {
     return _db.collection('journal_entries').add(entry.toMap());
   }
@@ -26,7 +36,6 @@ class FirestoreService {
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map((snapshot) {
-      print('Journal entries: ${snapshot.docs.map((doc) => doc.data())}');
       return snapshot.docs
           .map((doc) => JournalEntry.fromMap(doc.id, doc.data()!))
           .toList();

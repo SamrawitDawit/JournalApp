@@ -58,9 +58,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
     for (var entry in entries) {
       final entryDate = DateTime(entry.date.year, entry.date.month, entry.date.day);
-
-      print("Comparing $entryDate with $streakDate");
-
       if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
         streak++;
         streakDate = streakDate.subtract(Duration(days: 1));
@@ -68,7 +65,6 @@ class _CalendarPageState extends State<CalendarPage> {
         break;
       }
     }
-
     return streak;
   }
 
@@ -100,7 +96,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Current Streak: $_streak days", style: TextStyle(fontSize: 18)),
+            child: Text("Current Streak: $_streak ${_streak == 1 ? 'day' : 'days'}", style: TextStyle(fontSize: 18)),
           ),
         ],
       ),
