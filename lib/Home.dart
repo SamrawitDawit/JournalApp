@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:journal_app/Journal_entry_page.dart';
-import 'package:journal_app/calendar.dart';
+import 'package:journal_app/profile.dart';
 import 'package:journal_app/quote_service.dart';
 import 'package:journal_app/service.dart';
 import 'models.dart';
@@ -17,7 +17,6 @@ class Journals extends StatefulWidget {
 class _JournalState extends State<Journals>{
 
   final user = FirebaseAuth.instance.currentUser!;
-  final CalendarPage _calendarInstance = CalendarPage();
   FirestoreService _firestoreService = FirestoreService();
   QuoteService _quoteService = QuoteService();
   String _userName = "";
@@ -34,7 +33,9 @@ class _JournalState extends State<Journals>{
     _fetchStreak();
     _fetchNumberOfEntries();
     _fetchDailyQuote();
+
   }
+
   Future<void> _fetchDailyQuote() async{
     final quote = await _quoteService.getDailyQuote();
     setState(() {
@@ -67,6 +68,7 @@ class _JournalState extends State<Journals>{
   }
 
   Future<void> _fetchStreak() async {
+
       final entries = await _firestoreService.getJournalEntriesOnce(user.uid);
       setState(() {
         _streak = _calculateStreak(entries);
@@ -96,6 +98,16 @@ class _JournalState extends State<Journals>{
     return Scaffold(
       appBar: AppBar(
         title: Text("Journals"),
+        actions: [
+          IconButton(
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage())
+                );
+              },
+              icon: Icon(Icons.person))
+        ],
       ),
 
      body: Column(

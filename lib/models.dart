@@ -26,8 +26,18 @@ class JournalEntry{
   final DateTime date;
   final String? mood;
   final String? mediaUrl;
+  final bool isPasswordProtected;
 
-  JournalEntry({required this.id, required this.userId,  required this.title, required this.content, required this.date,  this.mood, this.mediaUrl});
+  JournalEntry({
+    required this.id,
+    required this.userId,
+    required this.title,
+    required this.content,
+    required this.date,
+    this.mood,
+    this.mediaUrl,
+    this.isPasswordProtected = false,
+  });
 
   Map<String, dynamic> toMap(){
     return{
@@ -37,6 +47,7 @@ class JournalEntry{
       'date': Timestamp.fromDate(date),
       'mood': mood,
       'mediaUrl': mediaUrl,
+      'isPasswordProtected': isPasswordProtected,
     };
   }
   factory JournalEntry.fromMap(String id, Map<String, dynamic> map){
@@ -47,7 +58,9 @@ class JournalEntry{
         content: map['content'],
         date: (map['date'] as Timestamp).toDate(),
         mood: map['mood'],
-        mediaUrl: map['mediaUrl']
+        mediaUrl: map['mediaUrl'],
+        isPasswordProtected: map['isPasswordProtected'] ?? false,
     );
   }
+
 }

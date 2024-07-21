@@ -12,12 +12,15 @@ class AddJournal extends StatefulWidget {
 }
 class _AddJournalState extends State<AddJournal>{
   final FirestoreService _firestoreService = FirestoreService();
+  final PasswordService _passwordService = PasswordService();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? _selectedMood;
   File? _mediaFile;
   final ImagePicker _picker = ImagePicker();
+  bool _isPasswordProtected = false;
 
   @override
 
@@ -101,6 +104,27 @@ class _AddJournalState extends State<AddJournal>{
                       ],
                     ),
                     SizedBox(height: 60,),
+                    SwitchListTile(
+                        title: Text("Password Protect Entry"),
+                        value: _isPasswordProtected,
+                        onChanged: (bool value){
+                          setState(() {
+                            _isPasswordProtected = value;
+                          });
+                        }),
+                    if (_isPasswordProtected)
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(labelText: "Password"),
+                        obscureText: true,
+                        validator: (value){
+                          if (_isPasswordProtected && (value == null || value.isEmpty)) {
+                            return "Please enter a password";
+                          }
+                          return null;
+                        },
+                      ),
+                    SizedBox(height: 16,),
                     ElevatedButton(
                         onPressed: () async{
                           if(_formKey.currentState!.validate()) {
@@ -115,8 +139,13 @@ class _AddJournalState extends State<AddJournal>{
                                 content: _contentController.text,
                                 date: DateTime.now(),
                                 mood: _selectedMood,
-                                mediaUrl: mediaUrl);
+                                mediaUrl: mediaUrl,
+                                isPasswordProtected: _isPasswordProtected,
+                            );
                             await _firestoreService.addJournalEntry(entry);
+                            if (_isPasswordProtected) {
+                              await _passwordService.setPassword(_passwordController.text);
+                            }
                             _titleController.clear();
                             _contentController.clear();
                             setState((){

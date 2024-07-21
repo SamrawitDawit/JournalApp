@@ -11,6 +11,7 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  final user = FirebaseAuth.instance.currentUser!;
   final FirestoreService _firestoreService = FirestoreService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Map<DateTime, List<JournalEntry>> _journalEntries = {};
@@ -48,8 +49,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   int _calculateStreak(List<JournalEntry> entries) {
     if (entries.isEmpty) return 0;
-
-    // Sort entries by date in descending order
     entries.sort((a, b) => b.date.compareTo(a.date));
 
     int streak = 0;

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:journal_app/add_journal.dart';
+import 'package:journal_app/main.dart';
 import 'package:journal_app/pages.dart';
 import 'package:journal_app/service.dart';
 import 'models.dart' as entities;
@@ -23,6 +23,7 @@ class _AuthScreenState extends State<AuthScreen>{
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text);
+      NotificationService(flutterLocalNotificationsPlugin).scheduleDailyNotifications();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Pages()));
 
     }
