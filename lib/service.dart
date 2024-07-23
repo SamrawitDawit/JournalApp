@@ -29,14 +29,17 @@ class FirestoreService {
   Future<void> deleteJournalEntry(String entryId) async {
     await _db.collection('journal_entries').doc(entryId).delete();
   }
-  Future<void> addUser(User user) {
+  Future<void> addUser(UserModel user) {
     return _db.collection("users").doc(user.id).set(user.toMap());
   }
-
-  Future<User?> getUser(String userId) async {
+  Future<bool> isUsernameAvailable(String username) async {
+    final result = await _db.collection('users').where('name', isEqualTo: username).get();
+    return result.docs.isEmpty;
+  }
+  Future<UserModel?> getUser(String userId) async {
     final doc = await _db.collection('users').doc(userId).get();
     if (doc.exists) {
-      return User.fromMap(doc.id, doc.data()!);
+      return UserModel.fromMap(doc.id, doc.data()!);
     }
     return null;
   }

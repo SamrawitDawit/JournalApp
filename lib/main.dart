@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:journal_app/auth.dart';
-import 'package:journal_app/add_journal.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:journal_app/welcome.dart';
 import 'firebase_options.dart';
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 void main() async {
@@ -23,8 +24,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AuthScreen(),
-      debugShowCheckedModeBanner: false, // To disable the debug banner
+      title: "Journal App",
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+      ),
+      home: WelcomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

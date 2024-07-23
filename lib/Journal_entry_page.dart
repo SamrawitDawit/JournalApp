@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:journal_app/edit_journal.dart';
 import 'package:journal_app/models.dart';
 import 'package:journal_app/service.dart';
+
 class JournalEntryPage extends StatefulWidget {
   final JournalEntry entry;
 
@@ -11,7 +12,8 @@ class JournalEntryPage extends StatefulWidget {
   @override
   _JournalEntryPageState createState() => _JournalEntryPageState();
 }
-class _JournalEntryPageState extends State<JournalEntryPage>{
+
+class _JournalEntryPageState extends State<JournalEntryPage> {
   final FirestoreService _firestoreService = FirestoreService();
   final PasswordService _passwordService = PasswordService();
   final TextEditingController _passwordController = TextEditingController();
@@ -29,20 +31,22 @@ class _JournalEntryPageState extends State<JournalEntryPage>{
         });
       }
     });
-
   }
-  void _editEntry() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => EditJournal(entry: widget.entry)),
-    ).then((_) {
-      setState(() {
 
-      });
+  void _editEntry() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditJournal(entry: widget.entry)),
+    ).then((_) {
+      setState(() {});
     });
   }
+
   void _deleteEntry() async {
     await _firestoreService.deleteJournalEntry(widget.entry.id);
     Navigator.pop(context);
   }
+
   void _showPasswordDialog() {
     showDialog(
       context: context,
@@ -74,23 +78,24 @@ class _JournalEntryPageState extends State<JournalEntryPage>{
       ),
     );
   }
+
+  @override
   Widget build(BuildContext context) {
-
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.entry.title),
-          actions: [
-            IconButton(
-                onPressed: _isPasswordVerified ? _editEntry : null,
-                icon: Icon(Icons.edit)),
-            IconButton(
-                onPressed: _isPasswordVerified ? _deleteEntry : null,
-                icon: Icon(Icons.delete))
-          ],
-        ),
-
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.entry.title),
+        backgroundColor: Colors.blueGrey,
+        actions: [
+          IconButton(
+              onPressed: _isPasswordVerified ? _editEntry : null,
+              icon: Icon(Icons.edit)),
+          IconButton(
+              onPressed: _isPasswordVerified ? _deleteEntry : null,
+              icon: Icon(Icons.delete)),
+        ],
+      ),
       body: _isPasswordVerified
-        ? Padding(
+          ? Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,32 +106,38 @@ class _JournalEntryPageState extends State<JournalEntryPage>{
                   DateFormat('yyyy-MM-dd').format(widget.entry.date),
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
-                SizedBox(width: 30,),
-                if (widget.entry.mood != null) Text(widget.entry.mood!, style: TextStyle(fontSize: 25),)],
+                SizedBox(width: 30),
+                if (widget.entry.mood != null)
+                  Text(
+                    widget.entry.mood!,
+                    style: TextStyle(fontSize: 25),
+                  )
+              ],
             ),
             SizedBox(height: 16),
             Text(
               widget.entry.content,
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 16,),
+            SizedBox(height: 16),
             if (widget.entry.mediaUrl != null)
               Center(
-                child: Image.network(
-                  widget.entry.mediaUrl!,
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-
-                )
-              )
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    widget.entry.mediaUrl!,
+                    width: double.infinity,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
           ],
         ),
       )
-        : Center(
+          : Center(
         child: Text("This entry is secured"),
-      )
+      ),
     );
   }
 }
-

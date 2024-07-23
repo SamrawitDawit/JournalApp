@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User{
+class UserModel{
   final String id;
   final String name;
 
-  User({required this.id, required this.name});
+  UserModel({required this.id, required this.name});
 
   Map<String, dynamic> toMap(){
     return{
       'name': name
     };
   }
-  factory User.fromMap(String id, Map<String, dynamic> map){
-    return User(
+  factory UserModel.fromMap(String id, Map<String, dynamic> map){
+    return UserModel(
       id: id,
       name: map['name']
     );

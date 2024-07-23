@@ -40,6 +40,7 @@ class _EditJournalState extends State<EditJournal> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Edit Journal Entry"),
+        backgroundColor: Colors.blueGrey,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -66,29 +67,39 @@ class _EditJournalState extends State<EditJournal> {
                           },
                         ),
                         SizedBox(height: 16,),
-                        TextFormField(
-                          controller: _contentController,
-                          decoration: InputDecoration(
-                            labelText: "Content"
-                          ),
-                          maxLines: 10,
-                          validator: (value) {
-                            if(value == null || value.isEmpty) {
-                              return "Please enter content";
-                            }
-                            return null;
-                          },
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _contentController,
+                                decoration: InputDecoration(
+                                  labelText: "Content",
+                                ),
+                                maxLines: 10,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter content";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.perm_media),
+                              onPressed: () async {
+                                final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                                if (pickedFile != null) {
+                                  setState(() {
+                                    _mediaFile = File(pickedFile.path);
+                                  });
+                                }
+                              },
+                              color: Colors.blueGrey[400],
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-                              if (pickedFile != null) {
-                                setState(() {
-                                  _mediaFile = File(pickedFile.path);
-                                });
-                              }
-                            },
-                            child: Text("Select media")),
+
                         if (_mediaFile != null)
                           Image.file(
                             _mediaFile!,
@@ -163,6 +174,7 @@ class _EditJournalState extends State<EditJournal> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueGrey[100],
                             padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                             textStyle: TextStyle(fontSize: 18),
                             shape: RoundedRectangleBorder(
@@ -191,7 +203,7 @@ class _EditJournalState extends State<EditJournal> {
       },
       child: CircleAvatar(
         radius: 24,
-        backgroundColor: _selectedMood == emoji ? Colors.blue : Colors.grey[200],
+        backgroundColor: _selectedMood == emoji ? Colors.blue : Colors.grey[400],
         child: Text(
           emoji,
           style: TextStyle(fontSize: 24),

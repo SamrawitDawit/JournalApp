@@ -4,7 +4,6 @@ import 'package:journal_app/models.dart';
 import 'package:journal_app/service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
 class CalendarPage extends StatefulWidget {
   @override
   _CalendarPageState createState() => _CalendarPageState();
@@ -67,37 +66,82 @@ class _CalendarPageState extends State<CalendarPage> {
     return streak;
   }
 
+  Widget _buildEventMarker(DateTime date, List events) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green,
+        shape: BoxShape.circle,
+      ),
+      width: 20.0,
+      height: 20.0,
+      child: Icon(
+        Icons.check,
+        color: Colors.white,
+        size: 14.0,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Calendar")),
-      body: Column(
-        children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2000, 1, 1),
-            lastDay: DateTime.utc(2100, 12, 31),
-            focusedDay: DateTime.now(),
-            calendarFormat: CalendarFormat.month,
-            eventLoader: (day) {
-              return _journalEntries[day] ?? [];
-            },
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
+      appBar: AppBar(
+        title: Text("Calendar"),
+        backgroundColor: Colors.blueGrey,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TableCalendar(
+              firstDay: DateTime.utc(2024, 1, 1),
+              lastDay: DateTime.utc(2100, 12, 31),
+              focusedDay: DateTime.now(),
+              calendarFormat: CalendarFormat.month,
+              eventLoader: (day) {
+                return _journalEntries[day] ?? [];
+              },
+              calendarStyle: CalendarStyle(
+                // todayDecoration: BoxDecoration(
+                //   color: Colors.blue,
+                //   shape: BoxShape.circle,
+                // ),
+                markerDecoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                markersAlignment: Alignment.bottomCenter,
               ),
-              markerDecoration: BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  // Update the selected day
+                });
+              },
+              onPageChanged: (focusedDay) {
+                // Update the focused day
+              },
+              headerStyle: HeaderStyle(
+                titleCentered: true,
+                formatButtonVisible: false,
+              ),
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, date, events) {
+                  if (events.isNotEmpty) {
+                    return _buildEventMarker(date, events);
+                  }
+                  return null;
+                },
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Current Streak: $_streak ${_streak == 1 ? 'day' : 'days'}", style: TextStyle(fontSize: 18)),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Current Streak: $_streak ${_streak == 1 ? 'day' : 'days'}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

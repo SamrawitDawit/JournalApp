@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:journal_app/add_journal.dart';
-import 'package:journal_app/calendar.dart';
 import 'package:journal_app/Home.dart';
-import 'package:journal_app/main.dart';
+import 'package:journal_app/calendar.dart';
+import 'package:journal_app/journal_list.dart';
+
+
 
 class Pages extends StatefulWidget {
   const Pages({super.key});
@@ -15,15 +16,17 @@ class _PagesState extends State<Pages> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    Journals(),
-    AddJournal(),
+    Home(),
+    JournalListPage(),
     CalendarPage(),
   ];
-  void _onTabTapped(int index){
+
+  void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +38,6 @@ class _PagesState extends State<Pages> {
     );
   }
 }
-
 
 class CustomBottomNavigation extends StatelessWidget {
   final int currentIndex;
@@ -49,17 +51,18 @@ class CustomBottomNavigation extends StatelessWidget {
       onTap: onTap,
       items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
+          icon: Icon(Icons.home),
+          label: "Home",
         ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: "Create"
+          icon: Icon(Icons.list),
+          label: "Journals",
         ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar'
-        )
-      ]);
+          icon: Icon(Icons.calendar_today),
+          label: 'Calendar',
+        ),
+      ],
+    );
   }
 }
