@@ -5,8 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:journal_app/models.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/auth.dart';
+import 'package:Memoire/models.dart';
+import 'package:Memoire/service.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _currentPasswordController = TextEditingController();
   UserModel? _userModel;
   String? _profilePhotoUrl;
+
   @override
   void initState() {
     super.initState();
@@ -40,24 +42,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
     }
   }
-  Future<void> _fetchProfilePhotoUrl() async{
+
+  Future<void> _fetchProfilePhotoUrl() async {
     final user = _auth.currentUser;
-      setState(() {
-        _profilePhotoUrl = user!.photoURL;
-      });
+    setState(() {
+      _profilePhotoUrl = user!.photoURL;
+    });
   }
+
   Future<void> _updateProfilePhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final user = _auth.currentUser;
-      if (user != null){
-        final filePath = 'profile_photos/{user.uid}.jpg';
+      if (user != null) {
+        final filePath = 'profile_photos/${user.uid}.jpg';
         final storageRef = _storage.ref().child(filePath);
         final uploadTask = storageRef.putFile(File(pickedFile.path));
 
-        final snapshot = await uploadTask.whenComplete(()=> null);
+        final snapshot = await uploadTask.whenComplete(() => null);
         final photoURL = await snapshot.ref.getDownloadURL();
 
         await user.updatePhotoURL(photoURL);
@@ -138,47 +142,83 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: Text('Edit your profile'),
         backgroundColor: Colors.blueGrey,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: _profilePhotoUrl != null ? NetworkImage(_profilePhotoUrl!) : AssetImage('assets/default_profile.jpg'),
-              ),
-              SizedBox(height: 16,),
-              ElevatedButton(
-                  onPressed: _updateProfilePhoto,
-                  child: Text("Change Profile Photo")),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: InputDecoration(labelText: "Name"),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.logout),
+                  onPressed: () => {
+                    _auth.signOut(),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AuthScreen()),
+                    ),
+                  },
+                ),
+                TextButton(
+                  onPressed: () => {
+                    _auth.signOut(),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AuthScreen()),
+                    ),
+                  },
+                  child: Text("Log out"),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _profilePhotoUrl != null
+                          ? NetworkImage(_profilePhotoUrl!)
+                          : AssetImage('assets/default_profile.jpg') as ImageProvider,
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _updateProfilePhoto,
+                      child: Text("Change Profile Photo"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: InputDecoration(labelText: "Name"),
+                          ),
+                          SizedBox(height: 16),
+                          TextFormField(
+                            controller: _journalPasswordController,
+                            decoration: InputDecoration(labelText: "Journal Lock Password"),
+                            obscureText: true,
+                          ),
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _showPasswordDialog,
+                            child: Text("Edit Profile"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueGrey[100],
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        controller: _journalPasswordController,
-                        decoration: InputDecoration(labelText: "Journal Lock Password"),
-                        obscureText: true,
-                      ),
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _showPasswordDialog,
-                        child: Text("Edit Profile"),
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[100]),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

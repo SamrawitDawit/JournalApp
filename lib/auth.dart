@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:journal_app/main.dart';
-import 'package:journal_app/pages.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/main.dart';
+import 'package:Memoire/pages.dart';
+import 'package:Memoire/service.dart';
 import 'models.dart' as entities;
 
 class AuthScreen extends StatefulWidget {

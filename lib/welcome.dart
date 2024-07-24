@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:journal_app/auth.dart';
+import 'package:Memoire/auth.dart';
 
 
 class WelcomePage extends StatelessWidget {

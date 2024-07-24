@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:journal_app/add_journal.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/add_journal.dart';
+import 'package:Memoire/service.dart';
 import 'package:intl/intl.dart';
-import 'package:journal_app/Journal_entry_page.dart';
+import 'package:Memoire/Journal_entry_page.dart';
 import 'models.dart';
 
 class JournalListPage extends StatelessWidget {

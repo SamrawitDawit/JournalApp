@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:journal_app/models.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/models.dart';
+import 'package:Memoire/service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -30,6 +30,7 @@ class _CalendarPageState extends State<CalendarPage> {
       setState(() {
         _journalEntries = _groupEntriesByDate(entries);
         _streak = _calculateStreak(entries);
+        print("Journal entries grouped by date: $_journalEntries");
       });
     }
   }
@@ -49,18 +50,21 @@ class _CalendarPageState extends State<CalendarPage> {
   int _calculateStreak(List<JournalEntry> entries) {
     if (entries.isEmpty) return 0;
     entries.sort((a, b) => b.date.compareTo(a.date));
-
     int streak = 0;
     DateTime today = DateTime.now();
     DateTime streakDate = DateTime(today.year, today.month, today.day);
+    Set<DateTime> countedDates = {};
 
     for (var entry in entries) {
       final entryDate = DateTime(entry.date.year, entry.date.month, entry.date.day);
-      if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
-        streak++;
-        streakDate = streakDate.subtract(Duration(days: 1));
-      } else {
-        break;
+      if (!countedDates.contains(entryDate)) {
+        if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
+          streak++;
+          countedDates.add(entryDate);
+          streakDate = streakDate.subtract(Duration(days: 1));
+        } else {
+          break;
+        }
       }
     }
     return streak;
@@ -76,7 +80,7 @@ class _CalendarPageState extends State<CalendarPage> {
       height: 20.0,
       child: Icon(
         Icons.check,
-        color: Colors.white,
+        color: Colors.green,
         size: 14.0,
       ),
     );
@@ -99,27 +103,17 @@ class _CalendarPageState extends State<CalendarPage> {
               focusedDay: DateTime.now(),
               calendarFormat: CalendarFormat.month,
               eventLoader: (day) {
-                return _journalEntries[day] ?? [];
+                final events = _journalEntries[day] ?? [];
+                print("Events for $day: $events");
+                return events;
               },
               calendarStyle: CalendarStyle(
-                // todayDecoration: BoxDecoration(
-                //   color: Colors.blue,
-                //   shape: BoxShape.circle,
-                // ),
                 markerDecoration: BoxDecoration(
                   color: Colors.green,
                   shape: BoxShape.circle,
                 ),
                 markersAlignment: Alignment.bottomCenter,
               ),
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  // Update the selected day
-                });
-              },
-              onPageChanged: (focusedDay) {
-                // Update the focused day
-              },
               headerStyle: HeaderStyle(
                 titleCentered: true,
                 formatButtonVisible: false,

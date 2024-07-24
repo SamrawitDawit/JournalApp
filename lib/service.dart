@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:journal_app/models.dart';
+import 'package:Memoire/models.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -91,7 +91,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       'Morning Journal Reminder',
-      'Don\'t forget to write your journal entry for the morning!',
+      'Don\'t forget to write your journal for the morning 🤗',
       _nextInstanceOfTime(8, 0),
       platformChannelSpecifics,
       androidAllowWhileIdle: true,
@@ -103,7 +103,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       1,
       'Night Journal Reminder',
-      'Don\'t forget to write your journal entry for the night!',
+      'Don\'t forget to write your journal for the night 🤗',
       _nextInstanceOfTime(20, 0), // 8:00 PM
       platformChannelSpecifics,
       androidAllowWhileIdle: true,

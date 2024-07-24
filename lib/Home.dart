@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:journal_app/profile.dart';
-import 'package:journal_app/quote_service.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/edit_profile.dart';
+import 'package:Memoire/quote_service.dart';
+import 'package:Memoire/service.dart';
 import 'models.dart';
 
 class Home extends StatefulWidget {
@@ -44,18 +44,23 @@ class _HomeState extends State<Home> {
     int streak = 0;
     DateTime today = DateTime.now();
     DateTime streakDate = DateTime(today.year, today.month, today.day);
+    Set<DateTime> countedDates = {};
 
     for (var entry in entries) {
       final entryDate = DateTime(entry.date.year, entry.date.month, entry.date.day);
-      if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
-        streak++;
-        streakDate = streakDate.subtract(Duration(days: 1));
-      } else {
-        break;
+      if (!countedDates.contains(entryDate)) {
+        if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
+          streak++;
+          countedDates.add(entryDate);
+          streakDate = streakDate.subtract(Duration(days: 1));
+        } else {
+          break;
+        }
       }
     }
     return streak;
   }
+
 
   Future<void> _fetchStreak() async {
     final entries = await _firestoreService.getJournalEntriesOnce(user.uid);
@@ -97,7 +102,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => EditProfilePage()),
               );
             },
             icon: CircleAvatar(

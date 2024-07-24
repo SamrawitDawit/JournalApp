@@ -2,9 +2,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:journal_app/auth.dart';
-import 'package:journal_app/models.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/models.dart';
+import 'package:Memoire/service.dart';
 
 class AddJournal extends StatefulWidget {
   @override
@@ -62,9 +61,9 @@ class _AddJournalState extends State<AddJournal> {
                         child: TextFormField(
                           controller: _contentController,
                           decoration: InputDecoration(
-                            labelText: "Content",
+                            // labelText: "Content",
                           ),
-                          maxLines: 10,
+                          maxLines: 15,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "Please enter content";

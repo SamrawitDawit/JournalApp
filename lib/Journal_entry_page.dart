@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:journal_app/edit_journal.dart';
-import 'package:journal_app/models.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/edit_journal.dart';
+import 'package:Memoire/models.dart';
+import 'package:Memoire/service.dart';
 
 class JournalEntryPage extends StatefulWidget {
   final JournalEntry entry;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:journal_app/Home.dart';
-import 'package:journal_app/calendar.dart';
-import 'package:journal_app/journal_list.dart';
+import 'package:Memoire/Home.dart';
+import 'package:Memoire/calendar.dart';
+import 'package:Memoire/journal_list.dart';
 
 
 

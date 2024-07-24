@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:journal_app/models.dart';
-import 'package:journal_app/service.dart';
+import 'package:Memoire/models.dart';
+import 'package:Memoire/service.dart';
 
 class EditJournal extends StatefulWidget {
   final JournalEntry entry;
@@ -74,9 +74,9 @@ class _EditJournalState extends State<EditJournal> {
                               child: TextFormField(
                                 controller: _contentController,
                                 decoration: InputDecoration(
-                                  labelText: "Content",
+                                  // labelText: "Content",
                                 ),
-                                maxLines: 10,
+                                maxLines: 15,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "Please enter content";
