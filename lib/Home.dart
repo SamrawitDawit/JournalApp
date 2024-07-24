@@ -119,6 +119,24 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                "Welcome back, $_userName!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+              ),
+              SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+
+                ),
+                child: Text(
+                  _dailyQuote,
+                  style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+              ),
               Stack(
                 children:[Center(
                   child: Image.asset(
@@ -128,10 +146,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                   SizedBox(height: 16),
-                  Text(
-                    "Welcome back, $_userName!",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
-                  ),
+
               ]),
               SizedBox(height: 20),
               Row(
@@ -150,23 +165,8 @@ class _HomeState extends State<Home> {
                   ),
                 ],
               ),
-              SizedBox(height: 25),
-              Text(
-                "Daily Quote",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  _dailyQuote,
-                  style: TextStyle(fontSize: 18, fontStyle: FontStyle.italic, color: Colors.black54),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+
+
             ],
           ),
         ),

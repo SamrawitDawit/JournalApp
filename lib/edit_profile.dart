@@ -84,7 +84,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         await _updateProfileDetails();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Authentication failed")),
+          SnackBar(content: Text("Incorrect login password")),
         );
       }
     }
@@ -110,10 +110,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Enter current password"),
+        title: Text("Enter your login password"),
         content: TextField(
           controller: _currentPasswordController,
-          decoration: InputDecoration(labelText: "Current Password"),
+          decoration: InputDecoration(labelText: "login Password"),
           obscureText: true,
         ),
         actions: [
@@ -144,81 +144,83 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.logout),
-                  onPressed: () => {
-                    _auth.signOut(),
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AuthScreen()),
-                    ),
-                  },
-                ),
-                TextButton(
-                  onPressed: () => {
-                    _auth.signOut(),
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AuthScreen()),
-                    ),
-                  },
-                  child: Text("Log out"),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _profilePhotoUrl != null
-                          ? NetworkImage(_profilePhotoUrl!)
-                          : AssetImage('assets/default_profile.jpg') as ImageProvider,
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _updateProfilePhoto,
-                      child: Text("Change Profile Photo"),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          TextFormField(
-                            controller: _nameController,
-                            decoration: InputDecoration(labelText: "Name"),
-                          ),
-                          SizedBox(height: 16),
-                          TextFormField(
-                            controller: _journalPasswordController,
-                            decoration: InputDecoration(labelText: "Journal Lock Password"),
-                            obscureText: true,
-                          ),
-                          SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _showPasswordDialog,
-                            child: Text("Edit Profile"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueGrey[100],
-                            ),
-                          ),
-                        ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.logout),
+                    onPressed: () => {
+                      _auth.signOut(),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AuthScreen()),
                       ),
-                    ),
-                  ],
+                    },
+                  ),
+                  TextButton(
+                    onPressed: () => {
+                      _auth.signOut(),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AuthScreen()),
+                      ),
+                    },
+                    child: Text("Log out"),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _profilePhotoUrl != null
+                            ? NetworkImage(_profilePhotoUrl!)
+                            : AssetImage('assets/default_profile.jpg') as ImageProvider,
+                      ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _updateProfilePhoto,
+                        child: Text("Change Profile Photo"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(labelText: "Name"),
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _journalPasswordController,
+                              decoration: InputDecoration(labelText: "Journal Lock Password"),
+                              obscureText: true,
+                            ),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: _showPasswordDialog,
+                              child: Text("Edit Profile"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueGrey[100],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

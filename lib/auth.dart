@@ -41,15 +41,6 @@ class _AuthScreenState extends State<AuthScreen> {
       });
       return;
     }
-
-    final usernameAvailable = await _firestoreService.isUsernameAvailable(_userNameController.text);
-    if (!usernameAvailable) {
-      setState(() {
-        _error = 'Username already taken';
-      });
-      return;
-    }
-
     if (_passwordController.text.length < 6) {
       setState(() {
         _error = 'Password must be at least 6 characters long';
@@ -74,6 +65,12 @@ class _AuthScreenState extends State<AuthScreen> {
     } catch (e) {
       setState(() {
         _error = 'Failed to sign up. Please try again.';
+        if (e is FirebaseAuthException) {
+          _error = e.message ?? _error;
+        } else if (e is FirebaseException) {
+          _error = e.message ?? _error;
+        }
+        _error = _error.replaceAll('email address', 'Username');
       });
     }
   }

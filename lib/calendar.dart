@@ -10,11 +10,10 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final user = FirebaseAuth.instance.currentUser!;
   final FirestoreService _firestoreService = FirestoreService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   Map<DateTime, List<JournalEntry>> _journalEntries = {};
   int _streak = 0;
+  DateTime _focusedDay = DateTime.now();
 
   @override
   void initState() {
@@ -23,14 +22,12 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Future<void> _fetchJournalEntries() async {
-    final user = _auth.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final entries = await _firestoreService.getJournalEntriesOnce(user.uid);
-      print("Journal entries fetched: $entries");
       setState(() {
         _journalEntries = _groupEntriesByDate(entries);
         _streak = _calculateStreak(entries);
-        print("Journal entries grouped by date: $_journalEntries");
       });
     }
   }
@@ -58,7 +55,7 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var entry in entries) {
       final entryDate = DateTime(entry.date.year, entry.date.month, entry.date.day);
       if (!countedDates.contains(entryDate)) {
-        if (entryDate.isAtSameMomentAs(streakDate) || entryDate.isAtSameMomentAs(streakDate.subtract(Duration(days: 1)))) {
+        if (isSameDay(entryDate, streakDate) || isSameDay(entryDate, streakDate.subtract(Duration(days: 1)))) {
           streak++;
           countedDates.add(entryDate);
           streakDate = streakDate.subtract(Duration(days: 1));
@@ -68,6 +65,10 @@ class _CalendarPageState extends State<CalendarPage> {
       }
     }
     return streak;
+  }
+
+  bool isSameDay(DateTime day1, DateTime day2) {
+    return day1.year == day2.year && day1.month == day2.month && day1.day == day2.day;
   }
 
   Widget _buildEventMarker(DateTime date, List events) {
@@ -80,7 +81,7 @@ class _CalendarPageState extends State<CalendarPage> {
       height: 20.0,
       child: Icon(
         Icons.check,
-        color: Colors.green,
+        color: Colors.white,
         size: 14.0,
       ),
     );
@@ -100,11 +101,10 @@ class _CalendarPageState extends State<CalendarPage> {
             TableCalendar(
               firstDay: DateTime.utc(2024, 1, 1),
               lastDay: DateTime.utc(2100, 12, 31),
-              focusedDay: DateTime.now(),
+              focusedDay: _focusedDay,
               calendarFormat: CalendarFormat.month,
               eventLoader: (day) {
                 final events = _journalEntries[day] ?? [];
-                print("Events for $day: $events");
                 return events;
               },
               calendarStyle: CalendarStyle(
@@ -126,6 +126,11 @@ class _CalendarPageState extends State<CalendarPage> {
                   return null;
                 },
               ),
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _focusedDay = focusedDay;
+                });
+              },
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

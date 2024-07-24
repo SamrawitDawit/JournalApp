@@ -17,7 +17,7 @@ class _EditJournalState extends State<EditJournal> {
   final FirestoreService _firestoreService = FirestoreService();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
 
   final _formKey = GlobalKey<FormState>();
   String? _selectedMood;
@@ -133,18 +133,6 @@ class _EditJournalState extends State<EditJournal> {
                               });
                             }
                         ),
-                        if (_isPasswordProtected)
-                          TextFormField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(labelText: "Password"),
-                            obscureText: true,
-                            validator: (value) {
-                              if (_isPasswordProtected && (value == null || value.isEmpty)) {
-                                return "Please enter a password";
-                              }
-                              return null;
-                            },
-                          ),
                         SizedBox(height: 16,),
                         ElevatedButton(
                           onPressed: () async {
@@ -164,13 +152,11 @@ class _EditJournalState extends State<EditJournal> {
                                 isPasswordProtected: _isPasswordProtected,
                               );
                               await _firestoreService.updateJournalEntry(entry);
-                              if (_isPasswordProtected) {
-                                await _passwordService.setPassword(_passwordController.text);
-                              }
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text("Journal entry updated")),
                               );
+                              Navigator.pop(context);
                             }
                           },
                           style: ElevatedButton.styleFrom(

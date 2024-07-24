@@ -148,9 +148,11 @@ class _AddJournalState extends State<AddJournal> {
                         _selectedMood = null;
                         _mediaFile = null;
                       });
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Journal entry added")),
                       );
+                      Navigator.pop(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(

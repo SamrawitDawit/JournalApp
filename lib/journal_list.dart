@@ -30,7 +30,11 @@ class JournalListPage extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text("No journal entries yet"));
           }
-          final entries = snapshot.data!;
+          var entries = snapshot.data!;
+
+          // Sort entries by date, most recent first
+          entries.sort((a, b) => b.date.compareTo(a.date));
+
           return ListView.builder(
             itemCount: entries.length,
             itemBuilder: (context, index) {
@@ -61,8 +65,10 @@ class JournalListPage extends StatelessWidget {
                       DateFormat.yMMMd().format(entry.date),
                       style: TextStyle(fontSize: 16, color: Colors.black54),
                     ),
-                   trailing: entry.isPasswordProtected == true ? Icon(Icons.lock) : Text('')
-              ),
+                    trailing: entry.isPasswordProtected == true
+                        ? Icon(Icons.lock)
+                        : Text(entry.mood ?? '', style: TextStyle(fontSize: 20, color: Colors.black54)),
+                  ),
                 ),
               );
             },
