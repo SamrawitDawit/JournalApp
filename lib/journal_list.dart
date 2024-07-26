@@ -32,7 +32,7 @@ class JournalListPage extends StatelessWidget {
           }
           var entries = snapshot.data!;
 
-          // Sort entries by date, most recent first
+
           entries.sort((a, b) => b.date.compareTo(a.date));
 
           return ListView.builder(
